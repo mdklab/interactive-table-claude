@@ -24,12 +24,13 @@
   --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
   --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
 
-  --header-height: 52px;
-  --controls-height: 52px;
 }
 
 /* ===== Reset / Base ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Form elements don't inherit font by default in most browsers */
+button, input, select, textarea { font-family: inherit; font-size: inherit; }
 
 html { font-size: 15px; }
 
@@ -37,7 +38,8 @@ body {
   font-family: var(--font);
   background: var(--color-bg);
   color: var(--color-text);
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -49,7 +51,6 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  height: var(--header-height);
   display: flex;
   align-items: center;
   gap: 12px;
@@ -90,7 +91,7 @@ body {
   color: var(--color-text);
   font-size: .85rem;
   cursor: pointer;
-  transition: background .15s, border-color .15s;
+  transition: background .15s, border-color .15s, color .15s;
 }
 
 .header-actions button:hover {
@@ -106,6 +107,7 @@ body {
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
+  overflow: auto;
 }
 
 .upload-inner {
@@ -118,6 +120,7 @@ body {
   transition: border-color .2s, background .2s, transform .15s;
   max-width: 480px;
   width: 100%;
+  position: relative;
 }
 
 .upload-inner:hover,
@@ -128,6 +131,12 @@ body {
 
 .upload-zone.drag-over .upload-inner {
   transform: scale(1.02);
+}
+
+/* Loading state */
+.upload-zone.is-loading .upload-inner {
+  opacity: .7;
+  pointer-events: none;
 }
 
 .upload-icon {
@@ -155,6 +164,13 @@ body {
   cursor: pointer;
 }
 
+.upload-error {
+  margin-top: 10px;
+  font-size: .875rem;
+  color: var(--color-danger);
+  font-weight: 500;
+}
+
 #fileInput {
   position: absolute;
   width: 1px; height: 1px;
@@ -169,21 +185,19 @@ body {
   display: flex;
   flex-direction: column;
   flex: 1;
-  padding: 0;
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* ===== Controls Bar ===== */
 .controls-bar {
-  position: sticky;
-  top: var(--header-height);
-  z-index: 90;
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 8px 16px;
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
-  height: var(--controls-height);
+  /* No fixed height — let content determine it; updateStickyTop() measures the result */
 }
 
 .search-wrap {
@@ -258,6 +272,7 @@ body {
 .page-size-label {
   font-size: .85rem;
   color: var(--color-text-muted);
+  white-space: nowrap;
 }
 
 #pageSize {
@@ -271,9 +286,11 @@ body {
 }
 
 /* ===== Table Wrapper ===== */
+/* .table-wrap is the scroll container — sticky thead works relative to it */
 .table-wrap {
-  overflow-x: auto;
+  overflow: auto;
   flex: 1;
+  min-height: 0;
 }
 
 /* ===== Table ===== */
@@ -284,11 +301,13 @@ body {
   table-layout: auto;
 }
 
-/* Header row */
+/* Sticky header: <thead> sticks at the top of .table-wrap (the scroll container).
+   This is more reliable than per-<th> sticky, which breaks when any ancestor
+   has overflow:auto/scroll/hidden. */
 #dataTable thead {
   position: sticky;
-  top: calc(var(--header-height) + var(--controls-height));
-  z-index: 80;
+  top: 0;
+  z-index: 5;
 }
 
 #headerRow th {
@@ -300,11 +319,12 @@ body {
   white-space: nowrap;
   cursor: pointer;
   user-select: none;
-  position: relative;
 }
 
-#headerRow th:hover {
-  background: #e8ecf7;
+#headerRow th:hover { background: #e8ecf7; }
+#headerRow th:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
 }
 
 .th-content {
@@ -319,22 +339,25 @@ body {
   line-height: 1;
   font-size: .65rem;
   gap: 1px;
+  flex-shrink: 0;
 }
 
 .arrow-up,
 .arrow-down {
   color: var(--color-sort-inactive);
-  transition: color .15s, opacity .15s;
+  transition: color .15s;
 }
 
-th[data-sort="asc"] .arrow-up { color: var(--color-sort-active); }
+th[data-sort="asc"] .arrow-up   { color: var(--color-sort-active); }
 th[data-sort="desc"] .arrow-down { color: var(--color-sort-active); }
 
-/* Filter row */
+/* Filter row — sits directly below the header row inside sticky <thead> */
 #filterRow th {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   padding: 4px 6px;
+  /* Shadow separates sticky filter row from scrolling body rows */
+  box-shadow: 0 2px 6px rgba(0,0,0,.07);
 }
 
 .col-filter {
@@ -387,7 +410,13 @@ th[data-sort="desc"] .arrow-down { color: var(--color-sort-active); }
   border-top: 1px solid var(--color-border);
 }
 
+/* Hide the pagination bar entirely when it has no buttons */
+.pagination:empty { display: none; }
+
 .page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-width: 34px;
   height: 34px;
   padding: 0 8px;
@@ -398,13 +427,17 @@ th[data-sort="desc"] .arrow-down { color: var(--color-sort-active); }
   font-size: .85rem;
   cursor: pointer;
   transition: background .15s, border-color .15s, color .15s;
-  line-height: 1;
 }
 
 .page-btn:hover:not(:disabled):not(.active) {
   background: var(--color-row-hover);
   border-color: var(--color-primary);
   color: var(--color-primary);
+}
+
+.page-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
 }
 
 .page-btn.active {
@@ -433,7 +466,6 @@ th[data-sort="desc"] .arrow-down { color: var(--color-sort-active); }
 @media (max-width: 600px) {
   .controls-bar {
     flex-wrap: wrap;
-    height: auto;
     padding: 8px 12px;
     gap: 8px;
   }
@@ -443,7 +475,6 @@ th[data-sort="desc"] .arrow-down { color: var(--color-sort-active); }
 
   .upload-inner { padding: 40px 20px; }
 
-  #dataTable thead {
-    top: calc(var(--header-height) + 96px);
-  }
+  /* On mobile the controls bar wraps; thead sticky top:0 still works correctly
+     because it is relative to .table-wrap, not the page. */
 }

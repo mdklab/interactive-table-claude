@@ -11,15 +11,15 @@
   <!-- Sticky app toolbar (hidden until file is loaded) -->
   <header id="appHeader" class="app-header hidden">
     <span class="app-title">CSV → Interactive Table</span>
-    <span id="fileName" class="file-name"></span>
+    <span id="fileName" class="file-name" aria-label="Loaded file"></span>
     <div class="header-actions">
-      <button id="btnNew" title="Load a new file">New</button>
-      <button id="btnExport" title="Export filtered data as CSV">Export</button>
+      <button id="btnNew"    aria-label="Load a new file">New file</button>
+      <button id="btnExport" aria-label="Export filtered rows as CSV">Export CSV</button>
     </div>
   </header>
 
   <!-- Upload zone (shown before file is loaded) -->
-  <main id="uploadZone" class="upload-zone">
+  <main id="uploadZone" class="upload-zone" role="region" aria-label="File upload">
     <div class="upload-inner">
       <svg class="upload-icon" viewBox="0 0 64 64" aria-hidden="true">
         <path d="M32 4 L32 42 M18 20 L32 4 L46 20" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
@@ -27,7 +27,8 @@
       </svg>
       <p class="upload-title">Drop a CSV file here</p>
       <p class="upload-sub">or <label class="upload-link" for="fileInput">browse to upload</label></p>
-      <input type="file" id="fileInput" accept=".csv,text/csv,text/plain" aria-label="Choose CSV file">
+      <input type="file" id="fileInput" accept=".csv,.tsv,.txt,text/csv,text/plain" aria-label="Choose CSV file">
+      <p id="uploadError" class="upload-error" hidden aria-live="polite"></p>
     </div>
   </main>
 
@@ -35,15 +36,20 @@
   <div id="tableArea" class="table-area hidden">
 
     <!-- Controls bar -->
-    <div class="controls-bar">
+    <div class="controls-bar" role="toolbar" aria-label="Table controls">
       <div class="search-wrap">
         <span class="search-icon" aria-hidden="true">&#128269;</span>
-        <input type="search" id="globalSearch" placeholder="Search all columns…" autocomplete="off" aria-label="Search all columns">
-        <button id="clearSearch" class="clear-btn" title="Clear search" aria-label="Clear search">&#x2715;</button>
+        <input type="search" id="globalSearch"
+               placeholder="Search all columns…"
+               autocomplete="off"
+               aria-label="Search all columns">
+        <button id="clearSearch" class="clear-btn"
+                title="Clear search"
+                aria-label="Clear search">&#x2715;</button>
       </div>
       <div class="controls-right">
-        <span id="rowInfo" class="row-info"></span>
-        <label class="page-size-label" for="pageSize">Rows:</label>
+        <span id="rowInfo" class="row-info" aria-live="polite" aria-atomic="true"></span>
+        <label class="page-size-label" for="pageSize">Rows per page:</label>
         <select id="pageSize" aria-label="Rows per page">
           <option value="25">25</option>
           <option value="50" selected>50</option>
@@ -54,19 +60,19 @@
       </div>
     </div>
 
-    <!-- Table wrapper (scrollable) -->
+    <!-- Table wrapper (scrollable horizontally) -->
     <div class="table-wrap">
-      <table id="dataTable">
+      <table id="dataTable" role="grid">
         <thead>
-          <tr id="headerRow"></tr>
-          <tr id="filterRow"></tr>
+          <tr id="headerRow" role="row"></tr>
+          <tr id="filterRow" role="row" aria-label="Column filters"></tr>
         </thead>
         <tbody id="tableBody"></tbody>
       </table>
     </div>
 
     <!-- Pagination -->
-    <div id="pagination" class="pagination" role="navigation" aria-label="Pagination"></div>
+    <nav id="pagination" class="pagination" aria-label="Pagination"></nav>
 
   </div>
 
