@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSV → Interactive Table</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Sticky app toolbar (hidden until file is loaded) -->
+  <header id="appHeader" class="app-header hidden">
+    <span class="app-title">CSV → Interactive Table</span>
+    <span id="fileName" class="file-name"></span>
+    <div class="header-actions">
+      <button id="btnNew" title="Load a new file">New</button>
+      <button id="btnExport" title="Export filtered data as CSV">Export</button>
+    </div>
+  </header>
+
+  <!-- Upload zone (shown before file is loaded) -->
+  <main id="uploadZone" class="upload-zone">
+    <div class="upload-inner">
+      <svg class="upload-icon" viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M32 4 L32 42 M18 20 L32 4 L46 20" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M10 48 L10 58 L54 58 L54 48" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round"/>
+      </svg>
+      <p class="upload-title">Drop a CSV file here</p>
+      <p class="upload-sub">or <label class="upload-link" for="fileInput">browse to upload</label></p>
+      <input type="file" id="fileInput" accept=".csv,text/csv,text/plain" aria-label="Choose CSV file">
+    </div>
+  </main>
+
+  <!-- Table area (shown after file is loaded) -->
+  <div id="tableArea" class="table-area hidden">
+
+    <!-- Controls bar -->
+    <div class="controls-bar">
+      <div class="search-wrap">
+        <span class="search-icon" aria-hidden="true">&#128269;</span>
+        <input type="search" id="globalSearch" placeholder="Search all columns…" autocomplete="off" aria-label="Search all columns">
+        <button id="clearSearch" class="clear-btn" title="Clear search" aria-label="Clear search">&#x2715;</button>
+      </div>
+      <div class="controls-right">
+        <span id="rowInfo" class="row-info"></span>
+        <label class="page-size-label" for="pageSize">Rows:</label>
+        <select id="pageSize" aria-label="Rows per page">
+          <option value="25">25</option>
+          <option value="50" selected>50</option>
+          <option value="100">100</option>
+          <option value="250">250</option>
+          <option value="0">All</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Table wrapper (scrollable) -->
+    <div class="table-wrap">
+      <table id="dataTable">
+        <thead>
+          <tr id="headerRow"></tr>
+          <tr id="filterRow"></tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div id="pagination" class="pagination" role="navigation" aria-label="Pagination"></div>
+
+  </div>
+
+  <script src="lib.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tests — CSV Interactive Table</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px;
+      background: #f5f6fa;
+      color: #1a1d2e;
+      padding: 24px;
+    }
+
+    h1 { font-size: 1.25rem; margin-bottom: 20px; color: #4361ee; }
+
+    .summary {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      border: 1px solid transparent;
+    }
+    .summary.all-pass { background: #d1fae5; border-color: #6ee7b7; color: #065f46; }
+    .summary.has-fail { background: #fee2e2; border-color: #fca5a5; color: #7f1d1d; }
+    .summary .detail { font-weight: 400; opacity: .85; font-size: .9rem; }
+
+    section {
+      background: #fff;
+      border: 1px solid #dde1ea;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .group-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: #f1f3f9;
+      border-bottom: 1px solid #dde1ea;
+      font-weight: 600;
+      font-size: .9rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .group-header:hover { background: #e8ecf7; }
+    .group-badge {
+      font-size: .78rem;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 99px;
+    }
+    .badge-pass { background: #d1fae5; color: #065f46; }
+    .badge-fail { background: #fee2e2; color: #7f1d1d; }
+
+    ul { list-style: none; padding: 0; }
+
+    li {
+      display: flex;
+      flex-direction: column;
+      padding: 7px 16px;
+      border-bottom: 1px solid #f0f2f8;
+      font-size: .85rem;
+    }
+    li:last-child { border-bottom: none; }
+
+    .test-line {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .icon { font-size: .8rem; width: 16px; flex-shrink: 0; }
+    li.pass .icon { color: #10b981; }
+    li.fail .icon { color: #ef4444; }
+
+    .test-name { flex: 1; }
+    li.fail .test-name { color: #b91c1c; font-weight: 500; }
+
+    pre.error {
+      margin-top: 6px;
+      margin-left: 24px;
+      padding: 8px 12px;
+      background: #fef2f2;
+      border-left: 3px solid #fca5a5;
+      border-radius: 0 4px 4px 0;
+      font-size: .8rem;
+      white-space: pre-wrap;
+      word-break: break-all;
+      color: #7f1d1d;
+      font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+    }
+
+    .collapsed ul { display: none; }
+
+    a.back {
+      display: inline-block;
+      margin-top: 20px;
+      color: #4361ee;
+      text-decoration: none;
+      font-size: .85rem;
+    }
+    a.back:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>Test Suite — CSV → Interactive Table</h1>
+  <div id="root"></div>
+  <a class="back" href="index.html">← Back to app</a>
+
+  <script src="lib.js"></script>
+  <script src="test.js"></script>
+</body>
+</html>
