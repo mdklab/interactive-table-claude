@@ -2,8 +2,12 @@
 // Node.js test runner for pure functions in lib.js
 // Usage: node test.node.js
 
-const fs = require('fs');
-eval(fs.readFileSync(__dirname + '/lib.js', 'utf8'));
+const {
+  parseCSV, buildData, detectColTypes,
+  filterRows, sortRows,
+  buildPageList, getPageSlice, calcTotalPages,
+  escapeCSVField,
+} = require('./lib.js');
 
 /* ===== Minimal runner ===== */
 let passed = 0, failed = 0;

@@ -1,0 +1,21 @@
+id,name,department,salary,hire_date,active
+1,Alice Johnson,Engineering,95000,2019-03-15,true
+2,Bob Smith,Design,72000,2020-07-01,true
+3,Charlie Brown,Engineering,110000,2018-01-20,true
+4,Diana Prince,Management,130000,2017-06-10,true
+5,Eve Williams,Design,68000,2021-11-05,false
+6,Frank Miller,Engineering,88000,2020-02-28,true
+7,Grace Lee,HR,65000,2022-04-12,true
+8,Henry Davis,Engineering,102000,2019-08-30,true
+9,"Irving, Jr.",Sales,78000,2021-01-15,true
+10,Julia Roberts,Management,125000,2016-09-01,true
+11,Kevin Hart,Design,74000,2023-03-22,false
+12,Laura Palmer,Engineering,98000,2018-11-11,true
+13,Mike Chen,Sales,82000,2020-05-19,true
+14,Nancy Drew,HR,63000,2022-08-08,false
+15,Oscar Wilde,Engineering,115000,2017-12-01,true
+16,Paula Abdul,Design,71000,2021-06-30,true
+17,Quinn Taylor,Management,140000,2015-04-15,true
+18,Rachel Green,Sales,79000,2019-10-10,true
+19,Sam Wilson,Engineering,93000,2020-12-01,true
+20,Tina Turner,HR,67000,2023-01-09,true
